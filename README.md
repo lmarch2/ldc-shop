@@ -73,9 +73,9 @@
 
 数据库 (Vercel Postgres) 将会自动配置并链接。
 
-## ☁️ Cloudflare Workers 命令部署
+## ☁️ Cloudflare Workers 部署
 
-请参考 [`_workers_next/README.md`](./_workers_next/README.md) 使用 Wrangler 命令部署与配置。
+请参考 [`_workers_next/README.md`](./_workers_next/README.md) 查看详细的网页部署指南 (Workers Builds)。
 
 
 

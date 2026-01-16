@@ -267,6 +267,29 @@ export async function getProduct(id: string) {
     })
 }
 
+// Get product for admin (includes inactive products)
+export async function getProductForAdmin(id: string) {
+    return await withProductColumnFallback(async () => {
+        const result = await db.select({
+            id: products.id,
+            name: products.name,
+            description: products.description,
+            price: products.price,
+            compareAtPrice: products.compareAtPrice,
+            image: products.image,
+            category: products.category,
+            isHot: products.isHot,
+            isActive: products.isActive,
+            purchaseLimit: products.purchaseLimit,
+            purchaseWarning: products.purchaseWarning,
+        })
+            .from(products)
+            .where(eq(products.id, id));
+
+        return result[0] || null;
+    })
+}
+
 // Dashboard Stats
 export async function getDashboardStats() {
     return await withOrderColumnFallback(async () => {

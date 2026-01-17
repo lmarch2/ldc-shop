@@ -3,7 +3,7 @@
 import { auth } from "@/lib/auth"
 import { db } from "@/lib/db"
 import { products, cards, reviews, categories } from "@/lib/db/schema"
-import { eq, sql, inArray } from "drizzle-orm"
+import { eq, sql, inArray, and, or, isNull, lte } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { setSetting } from "@/lib/db/queries"
 
@@ -222,13 +222,11 @@ export async function deleteCards(cardIds: number[]) {
 
         await db.delete(cards)
             .where(
-                sql`${cards.id} IN ${batch} 
-                AND (
-                    ${cards.isUsed} IS NULL OR ${cards.isUsed} = 0
+                and(
+                    inArray(cards.id, batch),
+                    or(isNull(cards.isUsed), eq(cards.isUsed, false)),
+                    or(isNull(cards.reservedAt), lte(cards.reservedAt, new Date(Date.now() - 60 * 1000)))
                 )
-                AND (
-                    ${cards.reservedAt} IS NULL OR ${cards.reservedAt} <= ${Date.now() - 60 * 1000}
-                )`
             )
     }
 

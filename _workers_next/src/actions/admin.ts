@@ -101,6 +101,9 @@ export async function saveProduct(formData: FormData) {
         try {
             await db.run(sql.raw(`ALTER TABLE products ADD COLUMN purchase_warning TEXT`));
         } catch { /* column exists */ }
+        try {
+            await db.run(sql.raw(`ALTER TABLE products ADD COLUMN is_shared INTEGER DEFAULT 0`));
+        } catch { /* column exists */ }
     }
 
     try {

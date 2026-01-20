@@ -127,16 +127,19 @@ export async function getMyNotifications() {
                 .select({ id: broadcastReads.messageId })
                 .from(broadcastReads)
                 .where(and(eq(broadcastReads.userId, userId), sql`${broadcastReads.messageId} IN (${sql.join(ids)})`))
-            const readSet = new Set(readRows.map((r) => r.id))
-            broadcastItems = broadcasts.map((b) => ({
-                id: b.id,
+            const readSet = new Set(readRows.map((r) => Number(r.id)))
+            broadcastItems = broadcasts.map((b) => {
+                const bid = Number(b.id)
+                return ({
+                id: bid,
                 type: "broadcast",
                 titleKey: "profile.notifications.adminMessageTitle",
                 contentKey: "profile.notifications.adminMessageBody",
                 data: JSON.stringify({ title: b.title, body: b.body }),
-                isRead: readSet.has(b.id),
+                isRead: readSet.has(bid),
                 createdAt: b.createdAt ? new Date(b.createdAt as any).getTime() : null
-            }))
+            })
+            })
         }
     } catch {
         broadcastItems = []

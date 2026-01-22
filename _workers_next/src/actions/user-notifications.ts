@@ -65,10 +65,6 @@ export async function markAllNotificationsRead() {
             INSERT OR IGNORE INTO broadcast_reads (message_id, user_id, created_at)
             SELECT m.id, ${userId}, ${now}
             FROM broadcast_messages m
-            WHERE NOT EXISTS (
-                SELECT 1 FROM broadcast_reads r
-                WHERE r.message_id = m.id AND r.user_id = ${userId}
-            )
         `)
     } catch {
         // ignore
@@ -240,10 +236,6 @@ export async function clearMyNotifications() {
             INSERT OR IGNORE INTO broadcast_reads (message_id, user_id, created_at)
             SELECT m.id, ${userId}, ${now}
             FROM broadcast_messages m
-            WHERE NOT EXISTS (
-                SELECT 1 FROM broadcast_reads r
-                WHERE r.message_id = m.id AND r.user_id = ${userId}
-            )
         `)
     } catch {
         // ignore

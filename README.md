@@ -7,7 +7,7 @@
 基于 **Next.js 16**、**Shadcn UI** 和 **Linux DO Connect** 构建的强大的无服务器虚拟商品商店。
 
 > [!IMPORTANT]
-> **⚠️ Vercel 版本已停止更新，请使用 Cloudflare Workers 版本！**
+> **⚠️ Vercel 版本已停止更新，请使用 Cloudflare Workers 版本或者 Docker 版！**
 > 
 > Workers 版本是当前持续维护的版本，包含所有最新功能。Docker 版可能会有更新滞后。
 

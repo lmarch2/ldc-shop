@@ -65,6 +65,18 @@
     "home": {
         "title": "欢迎来到 LDC 商店",
         "subtitle": "为 Linux DO 生态打造的虚拟商品商店",
+        "heroBadge": "精选数字陈列",
+        "heroSearchHint": "快速探索",
+        "heroCategoryLead": "热门分类",
+        "catalogEyebrow": "目录与筛选",
+        "catalogTitle": "探索商品目录",
+        "catalogSubtitle": "按分类、库存、销量和价格快速找到最适合的商品。",
+        "resultsCount": "当前结果 {{count}}",
+        "metrics": {
+            "products": "商品总数",
+            "categories": "分类数量",
+            "visitors": "累计访客"
+        },
         "noProducts": "暂无商品",
         "checkBackLater": "请稍后再来！",
         "visitorCount": "累计访客数：{{count}}",

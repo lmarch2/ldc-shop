@@ -65,6 +65,18 @@
     "home": {
         "title": "Welcome to LDC Shop",
         "subtitle": "A virtual goods shop for the Linux DO ecosystem",
+        "heroBadge": "Curated Digital Storefront",
+        "heroSearchHint": "Quick discovery",
+        "heroCategoryLead": "Popular categories",
+        "catalogEyebrow": "Catalog & filters",
+        "catalogTitle": "Explore the catalog",
+        "catalogSubtitle": "Find the right product faster with category, stock, sales and price filters.",
+        "resultsCount": "{{count}} results",
+        "metrics": {
+            "products": "Products",
+            "categories": "Categories",
+            "visitors": "Visitors"
+        },
         "noProducts": "No products available yet.",
         "checkBackLater": "Check back later!",
         "visitorCount": "Total Visitors: {{count}}",

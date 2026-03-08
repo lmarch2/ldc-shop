@@ -3,8 +3,9 @@
 import { useDeferredValue, useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import Image from "next/image"
+import { ArrowRight, Boxes, Heart, Layers3, Search, SlidersHorizontal, Sparkles, Users } from "lucide-react"
 import { AnnouncementPopup } from "@/components/announcement-popup"
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -95,55 +96,189 @@ export function HomeContent({ products, announcement, visitorCount, categories =
     const startIndex = (currentPage - 1) * pagination.pageSize
     const pageItems = sortedProducts.slice(startIndex, startIndex + pagination.pageSize)
     const hasMore = currentPage < totalPages
+    const highlightedCategories = categories.slice(0, 4)
+    const sortOptions = [
+        { key: "default", label: t("home.sort.default") },
+        { key: "stockDesc", label: t("home.sort.stock") },
+        { key: "soldDesc", label: t("home.sort.sold") },
+        { key: "priceAsc", label: t("home.sort.priceAsc") },
+        { key: "priceDesc", label: t("home.sort.priceDesc") },
+    ] as const
+    const heroMetrics = [
+        {
+            key: "products",
+            label: t("home.metrics.products"),
+            value: products.length,
+            icon: Boxes,
+        },
+        {
+            key: "categories",
+            label: t("home.metrics.categories"),
+            value: categories.length,
+            icon: Layers3,
+        },
+        {
+            key: "visitors",
+            label: t("home.metrics.visitors"),
+            value: typeof visitorCount === "number" ? visitorCount : null,
+            icon: Users,
+        },
+    ]
 
     return (
-        <main className="container py-8 md:py-16 relative overflow-hidden">
+        <main className="container relative overflow-hidden py-8 md:py-14">
             <AnnouncementPopup popup={announcement?.popup ?? null} />
 
-            {/* Atmosphere background */}
             <div className="pointer-events-none absolute inset-0 -z-10">
-                <div className="absolute -top-48 left-1/2 h-80 w-[90vw] -translate-x-1/2 rounded-full bg-gradient-to-r from-primary/8 via-sky-200/8 to-emerald-200/8 blur-3xl" />
-                <div className="absolute top-10 left-[12%] h-36 w-60 rounded-full bg-primary/7 blur-3xl" />
-                <div className="absolute top-16 right-[10%] h-32 w-56 rounded-full bg-sky-200/8 blur-3xl dark:bg-sky-200/6" />
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(0,0,0,0.015),_transparent_70%)] dark:bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.02),_transparent_70%)]" />
-                <div className="absolute inset-0 opacity-[0.012] [background-image:radial-gradient(#000000_1px,transparent_1px)] [background-size:24px_24px] dark:[background-image:radial-gradient(#ffffff_1px,transparent_1px)]" />
+                <div className="absolute left-1/2 top-[-18rem] h-[28rem] w-[72rem] -translate-x-1/2 rounded-full bg-[radial-gradient(circle,_rgba(59,130,246,0.14),_transparent_62%)] blur-3xl dark:bg-[radial-gradient(circle,_rgba(96,165,250,0.18),_transparent_65%)]" />
+                <div className="absolute left-[8%] top-24 h-48 w-72 rounded-full bg-primary/10 blur-3xl" />
+                <div className="absolute right-[4%] top-16 h-64 w-64 rounded-full bg-cyan-200/20 blur-3xl dark:bg-cyan-400/10" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.42),_transparent_54%)] dark:bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.05),_transparent_58%)]" />
+                <div className="absolute inset-0 opacity-[0.03] [background-image:linear-gradient(to_right,rgba(15,23,42,0.18)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.12)_1px,transparent_1px)] [background-size:72px_72px] dark:[background-image:linear-gradient(to_right,rgba(255,255,255,0.08)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.06)_1px,transparent_1px)]" />
             </div>
 
-            {/* Announcement Banner */}
+            <section className="relative mb-8 overflow-hidden rounded-[2rem] border border-border/40 bg-gradient-to-br from-card via-card/95 to-primary/5 shadow-[0_25px_80px_-40px_rgba(15,23,42,0.25)]">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.75),_transparent_36%)] dark:bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.08),_transparent_36%)]" />
+                <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
+                <div className="relative grid gap-6 px-6 py-7 md:px-8 md:py-8 xl:grid-cols-[minmax(0,1.25fr)_22rem] xl:items-stretch">
+                    <div className="flex flex-col justify-between gap-6">
+                        <div className="space-y-5">
+                            <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/8 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-primary">
+                                <Sparkles className="h-3.5 w-3.5" />
+                                <span>{t("home.heroBadge")}</span>
+                            </div>
+                            <div className="max-w-3xl space-y-3">
+                                <h1 className="max-w-3xl text-4xl font-semibold tracking-tight text-foreground sm:text-5xl xl:text-6xl">
+                                    {t("home.title")}
+                                </h1>
+                                <p className="max-w-2xl text-sm leading-7 text-muted-foreground sm:text-base">
+                                    {t("home.subtitle")}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="grid gap-3 sm:grid-cols-3">
+                            {heroMetrics.map((metric) => {
+                                const Icon = metric.icon
+                                return (
+                                    <div
+                                        key={metric.key}
+                                        className="rounded-[1.4rem] border border-border/45 bg-background/72 px-4 py-4 shadow-sm backdrop-blur-md"
+                                    >
+                                        <div className="mb-3 inline-flex h-9 w-9 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+                                            <Icon className="h-4.5 w-4.5" />
+                                        </div>
+                                        <div className="text-2xl font-semibold tracking-tight text-foreground">
+                                            {metric.value === null ? "--" : metric.value}
+                                        </div>
+                                        <div className="mt-1 text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                                            {metric.label}
+                                        </div>
+                                    </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+
+                    <div className="flex flex-col gap-4">
+                        <div className="rounded-[1.7rem] border border-border/45 bg-background/76 p-5 shadow-sm backdrop-blur-xl">
+                            <div className="mb-4 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+                                <Search className="h-4 w-4" />
+                                <span>{t("home.heroSearchHint")}</span>
+                            </div>
+                            <div className="space-y-3">
+                                <div className="relative">
+                                    <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                                    <Input
+                                        placeholder={t("common.searchPlaceholder")}
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="h-11 rounded-2xl border-border/50 bg-background/90 pl-10 shadow-none transition-colors focus:border-primary/50"
+                                    />
+                                </div>
+                                <div className="rounded-[1.4rem] border border-border/45 bg-muted/25 p-4">
+                                    <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                                        <Layers3 className="h-4 w-4" />
+                                        <span>{t("home.heroCategoryLead")}</span>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {highlightedCategories.length > 0 ? (
+                                            highlightedCategories.map((category) => {
+                                                const categoryIcon = categoryConfig?.find((item) => item.name === category)?.icon
+                                                return (
+                                                    <button
+                                                        key={category}
+                                                        type="button"
+                                                        onClick={() => setSelectedCategory(category)}
+                                                        className={cn(
+                                                            "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+                                                            selectedCategory === category
+                                                                ? "border-primary/35 bg-primary/10 text-primary"
+                                                                : "border-border/55 bg-background/80 text-muted-foreground hover:border-primary/20 hover:text-foreground"
+                                                        )}
+                                                    >
+                                                        {categoryIcon ? `${categoryIcon} ${category}` : category}
+                                                    </button>
+                                                )
+                                            })
+                                        ) : (
+                                            <span className="text-sm text-muted-foreground">{t("home.noProducts")}</span>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2">
+                            {wishlistEnabled && (
+                                <Link href="/wishlist" className="inline-flex">
+                                    <Button variant="outline" className="h-11 rounded-2xl border-border/50 bg-background/70 px-4 shadow-none">
+                                        <Heart className="mr-2 h-4 w-4" />
+                                        {t("wishlist.title")}
+                                    </Button>
+                                </Link>
+                            )}
+                            <div className="inline-flex flex-1 items-center justify-between rounded-2xl border border-border/45 bg-background/72 px-4 py-3 text-sm text-muted-foreground shadow-sm">
+                                <span>{t("home.resultsCount", { count: sortedProducts.length })}</span>
+                                <ArrowRight className="h-4 w-4 text-primary" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {announcement?.banner && (
-                <section className="mb-8">
-                    <div className="relative overflow-hidden rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 p-4 animate-in fade-in slide-in-from-top-2 duration-300">
-                        <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary to-primary/50" />
-                        <div className="flex items-start gap-3 pl-3">
-                            <svg className="w-5 h-5 text-primary shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <section className="mb-6">
+                    <div className="relative overflow-hidden rounded-[1.6rem] border border-primary/15 bg-gradient-to-r from-primary/6 via-primary/10 to-cyan-200/10 px-5 py-4 animate-in fade-in slide-in-from-top-2 duration-300 dark:to-cyan-400/8">
+                        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-primary via-primary/80 to-cyan-400/70" />
+                        <div className="flex items-start gap-3 pl-2">
+                            <svg className="mt-0.5 h-5 w-5 shrink-0 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
                             </svg>
-                            <p className="text-sm text-foreground/90 leading-relaxed whitespace-pre-wrap">{announcement.banner}</p>
+                            <p className="whitespace-pre-wrap text-sm leading-relaxed text-foreground/90">{announcement.banner}</p>
                         </div>
                     </div>
                 </section>
             )}
 
-            {/* Pending Orders Notification */}
             {pendingOrders && pendingOrders.length > 0 && (
                 <section className="mb-8">
-                    <div className="relative overflow-hidden rounded-xl border border-yellow-500/20 bg-gradient-to-r from-yellow-500/5 via-yellow-500/10 to-yellow-500/5 p-4">
-                        <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-yellow-500 to-yellow-500/50" />
-                        <div className="flex items-center justify-between gap-4 pl-3">
+                    <div className="relative overflow-hidden rounded-[1.6rem] border border-yellow-500/20 bg-gradient-to-r from-yellow-500/6 via-yellow-500/10 to-amber-300/12 px-5 py-4 dark:to-amber-400/8">
+                        <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-yellow-500 to-amber-400/70" />
+                        <div className="flex items-center justify-between gap-4 pl-2">
                             <div className="flex items-center gap-3">
-                                <svg className="w-5 h-5 text-yellow-600 dark:text-yellow-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <svg className="h-5 w-5 shrink-0 text-yellow-600 dark:text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                                 </svg>
                                 <p className="text-sm font-medium text-foreground/90">
                                     {pendingOrders.length === 1
-                                        ? t('home.pendingOrder.single', { orderId: pendingOrders[0].orderId })
-                                        : t('home.pendingOrder.multiple', { count: pendingOrders.length })
-                                    }
+                                        ? t("home.pendingOrder.single", { orderId: pendingOrders[0].orderId })
+                                        : t("home.pendingOrder.multiple", { count: pendingOrders.length })}
                                 </p>
                             </div>
-                            <Link href={pendingOrders.length === 1 ? `/order/${pendingOrders[0].orderId}` : '/orders'}>
-                                <Button size="sm" variant="outline" className="border-yellow-500/30 hover:bg-yellow-500/10 hover:text-yellow-600 dark:hover:text-yellow-400 cursor-pointer">
-                                    {pendingOrders.length === 1 ? t('common.payNow') : t('common.viewOrders')}
+                            <Link href={pendingOrders.length === 1 ? `/order/${pendingOrders[0].orderId}` : "/orders"}>
+                                <Button size="sm" variant="outline" className="cursor-pointer rounded-full border-yellow-500/30 hover:bg-yellow-500/10 hover:text-yellow-600 dark:hover:text-yellow-400">
+                                    {pendingOrders.length === 1 ? t("common.payNow") : t("common.viewOrders")}
                                 </Button>
                             </Link>
                         </div>
@@ -151,204 +286,220 @@ export function HomeContent({ products, announcement, visitorCount, categories =
                 </section>
             )}
 
-            {/* Header Area with Visitor Count and Controls */}
-            <div className="flex flex-col gap-6 mb-8">
-                <div className="flex items-center justify-between">
-                    {typeof visitorCount === 'number' && (
-                        <Badge variant="secondary" className="px-3 py-1 bg-background/70 shadow-sm border border-border/40">
-                            {t('home.visitorCount', { count: visitorCount })}
-                        </Badge>
-                    )}
-                    {wishlistEnabled && (
-                        <Link href="/wishlist">
-                            <Button size="icon-sm" variant="outline" className="h-9 w-9 p-0">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                    <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8Z" />
-                                </svg>
-                                <span className="sr-only">{t('wishlist.title')}</span>
-                            </Button>
-                        </Link>
-                    )}
-                </div>
-
-                {/* Top Toolbar: Search & Filter Pills */}
-                <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between bg-card/50 p-1 rounded-xl">
-                    {/* Search Bar */}
-                    <div className="relative w-full md:w-72 shrink-0">
-                        <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                        >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                        <Input
-                            placeholder={t('common.searchPlaceholder')}
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-9 w-full bg-background border-border/50 focus:bg-background transition-all"
-                        />
+            <section className="mb-10 space-y-4">
+                <div className="flex flex-col gap-4 rounded-[1.8rem] border border-border/40 bg-card/70 p-4 shadow-[0_20px_50px_-36px_rgba(15,23,42,0.3)] backdrop-blur-md">
+                    <div className="flex flex-wrap items-center justify-between gap-3 px-1">
+                        <div className="space-y-1">
+                            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                                <SlidersHorizontal className="h-4 w-4" />
+                                <span>{t("home.catalogEyebrow")}</span>
+                            </div>
+                            <div className="text-sm text-muted-foreground">
+                                {t("home.catalogSubtitle")}
+                            </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <Badge variant="secondary" className="h-9 rounded-full border border-border/50 bg-background/80 px-4">
+                                {t("home.resultsCount", { count: sortedProducts.length })}
+                            </Badge>
+                            {typeof visitorCount === "number" && (
+                                <Badge variant="secondary" className="h-9 rounded-full border border-border/50 bg-background/80 px-4">
+                                    {t("home.visitorCount", { count: visitorCount })}
+                                </Badge>
+                            )}
+                        </div>
                     </div>
 
-                    {/* Apple-style Category Navigation Pill */}
-                    <div className="flex-1 w-full overflow-x-auto no-scrollbar pb-2 md:pb-0">
-                        <NavigationPill
-                            items={[
-                                { key: '', label: t('common.all') },
-                                ...categories.map(cat => ({
-                                    key: cat,
-                                    label: categoryConfig?.find(c => c.name === cat)?.icon
-                                        ? `${categoryConfig.find(c => c.name === cat)?.icon} ${cat}`
-                                        : cat,
-                                }))
-                            ]}
-                            selectedKey={selectedCategory || ''}
-                            onSelect={(key) => setSelectedCategory(key || null)}
-                        />
-                    </div>
+                    <div className="grid gap-4 xl:grid-cols-[minmax(0,17rem)_minmax(0,1fr)_auto] xl:items-center">
+                        <div className="relative w-full">
+                            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                            <Input
+                                placeholder={t("common.searchPlaceholder")}
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                className="h-11 rounded-2xl border-border/50 bg-background/90 pl-10 shadow-none"
+                            />
+                        </div>
 
-                    {/* Sort Dropdown (Simplified as inline buttons for now, or dropdown later) */}
-                    <div className="shrink-0 flex items-center gap-2 overflow-x-auto w-full md:w-auto pb-2 md:pb-0 no-scrollbar">
-                        <span className="text-xs text-muted-foreground font-medium whitespace-nowrap hidden md:inline-block mr-1">{t('home.sort.title')}:</span>
-                        {[
-                            { key: 'default', label: t('home.sort.default'), icon: null },
-                            { key: 'stockDesc', label: t('home.sort.stock'), icon: '📦' },
-                            { key: 'soldDesc', label: t('home.sort.sold'), icon: '🔥' },
-                            { key: 'priceAsc', label: t('home.sort.priceAsc'), icon: '💰' },
-                            { key: 'priceDesc', label: t('home.sort.priceDesc'), icon: '💰' },
-                        ].map(opt => (
-                            <Button
-                                key={opt.key}
-                                type="button"
-                                variant={sortKey === opt.key ? "secondary" : "ghost"}
-                                size="sm"
-                                className={cn(
-                                    "h-8 px-3 text-xs rounded-lg whitespace-nowrap",
-                                    sortKey === opt.key ? "bg-secondary font-medium text-secondary-foreground" : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                                )}
-                                onClick={() => setSortKey(opt.key)}
-                            >
-                                {opt.label}
-                            </Button>
-                        ))}
+                        <div className="w-full overflow-x-auto no-scrollbar pb-2 xl:pb-0">
+                            <NavigationPill
+                                items={[
+                                    { key: "", label: t("common.all") },
+                                    ...categories.map((cat) => {
+                                        const categoryIcon = categoryConfig?.find((c) => c.name === cat)?.icon
+                                        return {
+                                            key: cat,
+                                            label: categoryIcon ? `${categoryIcon} ${cat}` : cat,
+                                        }
+                                    }),
+                                ]}
+                                selectedKey={selectedCategory || ""}
+                                onSelect={(key) => setSelectedCategory(key || null)}
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 xl:pb-0">
+                            {sortOptions.map((opt) => (
+                                <Button
+                                    key={opt.key}
+                                    type="button"
+                                    variant={sortKey === opt.key ? "secondary" : "ghost"}
+                                    size="sm"
+                                    className={cn(
+                                        "h-10 rounded-2xl px-4 whitespace-nowrap text-xs",
+                                        sortKey === opt.key
+                                            ? "bg-primary text-primary-foreground hover:bg-primary/90"
+                                            : "text-muted-foreground hover:bg-muted/70 hover:text-foreground"
+                                    )}
+                                    onClick={() => setSortKey(opt.key)}
+                                >
+                                    {opt.label}
+                                </Button>
+                            ))}
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Main Product Grid (Full Width) */}
             <section>
+                <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                    <div className="space-y-2">
+                        <h2 className="text-2xl font-semibold tracking-tight text-foreground md:text-3xl">
+                            {t("home.catalogTitle")}
+                        </h2>
+                        <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+                            {t("home.catalogSubtitle")}
+                        </p>
+                    </div>
+                    <Badge variant="secondary" className="w-fit rounded-full border border-border/50 bg-background/80 px-4 py-2">
+                        {t("home.resultsCount", { count: sortedProducts.length })}
+                    </Badge>
+                </div>
+
                 {sortedProducts.length === 0 ? (
-                    <div className="text-center py-20 bg-muted/30 rounded-2xl border border-dashed border-muted-foreground/20 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.04),_transparent_60%)] dark:bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.06),_transparent_60%)]" />
-                        <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-muted/50 mb-4">
-                            <svg className="w-8 h-8 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <div className="relative overflow-hidden rounded-[2rem] border border-dashed border-border/50 bg-muted/25 px-6 py-20 text-center">
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_rgba(59,130,246,0.08),_transparent_60%)] dark:bg-[radial-gradient(circle_at_center,_rgba(96,165,250,0.08),_transparent_65%)]" />
+                        <div className="relative mb-4 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-background/80 shadow-sm">
+                            <svg className="h-8 w-8 text-muted-foreground/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                             </svg>
                         </div>
-                        <p className="text-muted-foreground font-medium">{t('home.noProducts')}</p>
-                        <p className="text-sm text-muted-foreground/60 mt-2">{t('home.checkBackLater')}</p>
+                        <p className="relative font-medium text-muted-foreground">{t("home.noProducts")}</p>
+                        <p className="relative mt-2 text-sm text-muted-foreground/70">{t("home.checkBackLater")}</p>
                         {selectedCategory && (
-                            <Button variant="link" className="mt-4" onClick={() => setSelectedCategory(null)}>
-                                {t('common.all')}
+                            <Button variant="link" className="relative mt-4" onClick={() => setSelectedCategory(null)}>
+                                {t("common.all")}
                             </Button>
                         )}
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                         {pageItems.map((product, index) => (
                             <Card
                                 key={product.id}
-                                className="group relative overflow-hidden flex flex-col rounded-2xl border border-border/30 bg-card shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-[0_6px_18px_rgba(0,0,0,0.06)] transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 motion-reduce:animate-none"
+                                className={cn(
+                                    "group tech-card relative flex h-full flex-col overflow-hidden rounded-[1.8rem] border border-border/35 bg-card/85 shadow-[0_20px_50px_-38px_rgba(15,23,42,0.28)] transition-all duration-300 animate-in fade-in slide-in-from-bottom-2 motion-reduce:animate-none",
+                                    product.stockCount <= 0 && "opacity-90"
+                                )}
                                 style={{ animationDelay: `${index * 60}ms` }}
                             >
                                 <Link
                                     href={`/buy/${product.id}`}
                                     prefetch={false}
-                                    aria-label={t('common.viewDetails')}
+                                    aria-label={t("common.viewDetails")}
                                     className="absolute inset-0 z-10"
                                 />
-                                {/* Image Section */}
-                                <div className="relative m-4 aspect-[16/10] overflow-hidden rounded-xl border border-border/20 bg-muted/10">
+                                <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(59,130,246,0.12),_transparent_32%)] opacity-80 dark:bg-[radial-gradient(circle_at_top_right,_rgba(96,165,250,0.14),_transparent_36%)]" />
+
+                                <div className="relative m-4 aspect-[4/3] overflow-hidden rounded-[1.45rem] border border-border/30 bg-gradient-to-br from-primary/8 via-background to-secondary/45">
                                     <Image
                                         src={product.image || `https://api.dicebear.com/7.x/shapes/svg?seed=${product.id}`}
                                         alt={product.name}
                                         fill
                                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                                         priority={index < 2}
-                                        className="object-contain transition-transform duration-700 ease-out group-hover:scale-105"
+                                        className="object-contain p-4 transition-transform duration-700 ease-out group-hover:scale-[1.04]"
                                     />
-                                    {product.category && product.category !== 'general' && (
-                                        <Badge className="absolute top-2 right-2 text-[10px] h-5 px-2 capitalize bg-background/90 border border-border/30 text-foreground shadow-sm">
-                                            {product.category}
+                                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_bottom,_rgba(255,255,255,0.1),_transparent_50%)] dark:bg-[radial-gradient(circle_at_bottom,_rgba(255,255,255,0.06),_transparent_55%)]" />
+                                    <div className="absolute left-3 right-3 top-3 flex items-start justify-between gap-2">
+                                        {product.category && product.category !== "general" ? (
+                                            <Badge className="h-7 rounded-full border border-border/40 bg-background/86 px-3 text-[10px] font-medium capitalize text-foreground shadow-sm">
+                                                {product.category}
+                                            </Badge>
+                                        ) : (
+                                            <span />
+                                        )}
+                                        <Badge
+                                            className={cn(
+                                                "h-7 rounded-full border px-3 text-[10px] font-medium shadow-sm",
+                                                product.stockCount > 0
+                                                    ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+                                                    : "border-rose-500/20 bg-rose-500/10 text-rose-700 dark:text-rose-300"
+                                            )}
+                                        >
+                                            {product.stockCount > 0 ? t("common.inStock") : t("common.outOfStock")}
+                                        </Badge>
+                                    </div>
+                                    {product.isHot && (
+                                        <Badge className="absolute bottom-3 left-3 h-7 rounded-full border-0 bg-orange-500 px-3 text-[10px] font-semibold text-white shadow-lg shadow-orange-500/20">
+                                            🔥 {t("buy.hot")}
                                         </Badge>
                                     )}
                                 </div>
-                                <div className="mx-4 h-px bg-border/15" />
 
-                                {/* Content Section */}
-                                <CardContent className="relative z-20 flex-1 px-5 pb-5 pt-4 pointer-events-none">
-                                    <div className="flex items-start justify-between gap-2 mb-1.5">
-                                        <h3 className="font-bold text-base tracking-tight group-hover:text-primary transition-colors duration-300 leading-snug line-clamp-1" title={product.name}>
-                                            {product.name}
-                                        </h3>
-                                    </div>
-
-                                    {product.isHot && (
-                                        <div className="mb-2">
-                                            <Badge variant="default" className="text-[10px] h-4 px-1.5 bg-orange-500 text-white border-0 shadow-sm">
-                                                🔥 {t('buy.hot')}
-                                            </Badge>
-                                        </div>
-                                    )}
-
-                                    {/* Rating */}
-                                    {product.reviewCount !== undefined && product.reviewCount > 0 && (
-                                        <div className="flex items-center gap-1.5 mb-2.5">
-                                            <StarRatingStatic rating={Math.round(product.rating || 0)} size="xs" />
-                                            <span className="text-[10px] text-muted-foreground font-medium">({product.reviewCount})</span>
-                                        </div>
-                                    )}
-
-                                    <div className="text-muted-foreground text-xs line-clamp-2 h-8 leading-4 overflow-hidden opacity-90">
-                                        {product.descriptionPlain || product.description || t('buy.noDescription')}
-                                    </div>
-                                </CardContent>
-
-                                {/* Footer Section */}
-                                <CardFooter className="relative z-20 px-5 py-4 flex flex-wrap items-center gap-3 mt-auto border-t border-border/15 bg-transparent pointer-events-none">
-                                    <div className="flex min-w-0 flex-1 flex-col">
-                                        <div className="flex items-baseline gap-2">
-                                            <span className="text-xl font-black text-primary tabular-nums whitespace-nowrap tracking-tight">{Number(product.price)}</span>
-                                            <span className="text-xs text-muted-foreground font-medium uppercase">{t('common.credits')}</span>
-                                            {product.compareAtPrice && Number(product.compareAtPrice) > Number(product.price) && (
-                                                <span className="text-xs text-muted-foreground/70 line-through tabular-nums">
-                                                    {Number(product.compareAtPrice)}
-                                                </span>
+                                <CardContent className="relative z-20 flex flex-1 flex-col px-5 pb-5 pt-1">
+                                    <div className="mb-3 flex items-start justify-between gap-3">
+                                        <div className="space-y-2">
+                                            <h3
+                                                className="line-clamp-1 text-lg font-semibold tracking-tight text-foreground transition-colors duration-300 group-hover:text-primary"
+                                                title={product.name}
+                                            >
+                                                {product.name}
+                                            </h3>
+                                            {product.reviewCount !== undefined && product.reviewCount > 0 && (
+                                                <div className="flex items-center gap-2">
+                                                    <StarRatingStatic rating={Math.round(product.rating || 0)} size="xs" />
+                                                    <span className="text-[11px] font-medium text-muted-foreground">
+                                                        {product.reviewCount}
+                                                    </span>
+                                                </div>
                                             )}
                                         </div>
-                                        <div className="flex items-center gap-2 mt-1">
-                                            <div className="flex items-center text-xs text-muted-foreground">
-                                                {/* Assuming Archive icon is imported, e.g., from 'lucide-react' */}
-                                                {/* <Archive className="w-3 h-3 mr-1" /> */}
-                                                <span>{t('admin.products.stock')}: {product.stockCount >= INFINITE_STOCK ? '∞' : product.stockCount}</span>
-                                            </div>
-                                            <span className="text-[10px] text-muted-foreground">
-                                                {t('common.sold')}: {product.soldCount}
-                                            </span>
-                                        </div>
                                     </div>
 
-                                    <span
-                                        className={cn(
-                                            "ml-auto inline-flex h-9 items-center rounded-full px-5 text-xs font-semibold backdrop-blur-sm shadow-sm transition-all duration-300",
-                                            product.stockCount > 0 ? "bg-primary/90 text-primary-foreground" : "bg-muted/80 text-muted-foreground"
-                                        )}
-                                    >
-                                        {product.stockCount > 0 ? t('common.buy') : t('common.outOfStock')}
-                                    </span>
-                                </CardFooter>
+                                    <div className="mb-5 line-clamp-3 min-h-[3.9rem] text-sm leading-6 text-muted-foreground/90">
+                                        {product.descriptionPlain || product.description || t("buy.noDescription")}
+                                    </div>
+
+                                    <div className="mt-auto rounded-[1.3rem] border border-border/35 bg-background/70 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.18)]">
+                                        <div className="flex items-end justify-between gap-4">
+                                            <div className="min-w-0">
+                                                <div className="flex items-baseline gap-2">
+                                                    <span className="whitespace-nowrap text-2xl font-semibold tracking-tight text-foreground tabular-nums">
+                                                        {Number(product.price)}
+                                                    </span>
+                                                    <span className="text-xs font-medium uppercase tracking-[0.16em] text-muted-foreground">
+                                                        {t("common.credits")}
+                                                    </span>
+                                                </div>
+                                                <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+                                                    <span>{t("common.stock")}: {product.stockCount >= INFINITE_STOCK ? "∞" : product.stockCount}</span>
+                                                    <span>{t("common.sold")}: {product.soldCount}</span>
+                                                    {product.compareAtPrice && Number(product.compareAtPrice) > Number(product.price) && (
+                                                        <span className="line-through opacity-70">
+                                                            {Number(product.compareAtPrice)}
+                                                        </span>
+                                                    )}
+                                                </div>
+                                            </div>
+
+                                            <div className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-border/45 bg-background/90 text-primary shadow-sm transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5">
+                                                <ArrowRight className="h-4.5 w-4.5" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
                             </Card>
                         ))}
                     </div>
@@ -356,14 +507,18 @@ export function HomeContent({ products, announcement, visitorCount, categories =
             </section>
 
             {sortedProducts.length > 0 && (
-                <div className="flex items-center justify-between mt-10 text-sm text-muted-foreground">
-                    <span>
-                        {t('search.page', { page: currentPage, totalPages })}
+                <div className="mt-10 flex flex-col gap-4 rounded-[1.6rem] border border-border/40 bg-card/70 px-5 py-4 text-sm text-muted-foreground shadow-[0_16px_40px_-32px_rgba(15,23,42,0.25)] backdrop-blur-md sm:flex-row sm:items-center sm:justify-between">
+                    <span className="font-medium">
+                        {t("search.page", { page: currentPage, totalPages })}
                     </span>
-                    {hasMore && (
-                        <Button variant="outline" size="sm" onClick={() => setPage(currentPage + 1)}>
-                            {t('common.loadMore')}
+                    {hasMore ? (
+                        <Button variant="outline" size="sm" className="h-10 rounded-2xl px-4" onClick={() => setPage(currentPage + 1)}>
+                            {t("common.loadMore")}
                         </Button>
+                    ) : (
+                        <span className="text-xs uppercase tracking-[0.18em] text-muted-foreground/80">
+                            {t("common.viewDetails")}
+                        </span>
                     )}
                 </div>
             )}

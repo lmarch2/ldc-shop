@@ -301,6 +301,80 @@ export function BuyContent({
         setSelectedGalleryImage(galleryImages[nextIndex] ?? null)
     }
 
+    const showInlineShareAction = isLoggedIn && hasStock && !needsQuestionVerification
+
+    const renderShareButton = (inline = false) => (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button
+                    type="button"
+                    variant="outline"
+                    className={
+                        inline
+                            ? "h-11 w-11 shrink-0 rounded-full border-border/45 bg-background/62 p-0 text-muted-foreground transition-colors hover:border-border hover:bg-muted/45 hover:text-foreground"
+                            : "h-10 w-10 rounded-full border-border/40 bg-background/58 p-0 text-muted-foreground transition-colors hover:border-border hover:bg-muted/45 hover:text-foreground"
+                    }
+                    aria-label={t('buy.share')}
+                    title={t('buy.share')}
+                >
+                    <Share2 className={inline ? "h-4 w-4 opacity-75" : "h-4 w-4 opacity-70"} />
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="rounded-2xl sm:max-w-md">
+                <DialogHeader>
+                    <DialogTitle>{t('buy.shareTitle')}</DialogTitle>
+                    <DialogDescription>{t('buy.shareDescription')}</DialogDescription>
+                </DialogHeader>
+                <div className="grid grid-cols-2 gap-2">
+                    {shareLinks?.x ? (
+                        <Button asChild variant="outline" className="rounded-xl">
+                            <a href={shareLinks.x} target="_blank" rel="noopener noreferrer">X (Twitter)</a>
+                        </Button>
+                    ) : (
+                        <Button variant="outline" className="rounded-xl" disabled>X (Twitter)</Button>
+                    )}
+                    {shareLinks?.facebook ? (
+                        <Button asChild variant="outline" className="rounded-xl">
+                            <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>
+                        </Button>
+                    ) : (
+                        <Button variant="outline" className="rounded-xl" disabled>Facebook</Button>
+                    )}
+                    {shareLinks?.telegram ? (
+                        <Button asChild variant="outline" className="rounded-xl">
+                            <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer">Telegram</a>
+                        </Button>
+                    ) : (
+                        <Button variant="outline" className="rounded-xl" disabled>Telegram</Button>
+                    )}
+                    {shareLinks?.whatsapp ? (
+                        <Button asChild variant="outline" className="rounded-xl">
+                            <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a>
+                        </Button>
+                    ) : (
+                        <Button variant="outline" className="rounded-xl" disabled>WhatsApp</Button>
+                    )}
+                    {shareLinks?.line ? (
+                        <Button asChild variant="outline" className="rounded-xl col-span-2">
+                            <a href={shareLinks.line} target="_blank" rel="noopener noreferrer">Line</a>
+                        </Button>
+                    ) : (
+                        <Button variant="outline" className="rounded-xl col-span-2" disabled>Line</Button>
+                    )}
+                </div>
+                <Button
+                    type="button"
+                    variant="secondary"
+                    className="rounded-xl"
+                    onClick={handleCopyLink}
+                    disabled={!shareUrl}
+                >
+                    {t('buy.shareCopy')}
+                </Button>
+            </DialogContent>
+        </Dialog>
+    )
+
     return (
         <main className="container relative py-8 md:py-16">
             <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
@@ -594,59 +668,66 @@ export function BuyContent({
                                             </div>
                                         ) : hasStock ? (
                                             displayProduct.purchaseWarning && !warningConfirmed ? (
-                                                <Dialog open={showWarningDialog} onOpenChange={setShowWarningDialog}>
-                                                    <DialogTrigger asChild>
-                                                        <Button
-                                                            size="lg"
-                                                            className="h-12 w-full rounded-xl bg-primary px-6 font-medium text-primary-foreground shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/25 active:scale-[0.99]"
-                                                        >
-                                                            {t('common.buyNow')}
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent className="rounded-2xl sm:max-w-md">
-                                                        <DialogHeader>
-                                                            <DialogTitle className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
-                                                                <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                                </svg>
-                                                                {t('buy.warningTitle')}
-                                                            </DialogTitle>
-                                                        </DialogHeader>
-                                                        <div className="py-4 text-sm leading-relaxed text-muted-foreground">
-                                                            <div className="prose prose-sm max-w-none dark:prose-invert [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
-                                                                <ReactMarkdown>{displayProduct.purchaseWarning || ''}</ReactMarkdown>
+                                                <div className="flex items-center gap-2">
+                                                    <Dialog open={showWarningDialog} onOpenChange={setShowWarningDialog}>
+                                                        <DialogTrigger asChild>
+                                                            <Button
+                                                                size="lg"
+                                                                className="h-11 flex-1 rounded-full bg-primary px-5 font-medium text-primary-foreground shadow-[0_16px_34px_-20px_rgba(15,23,42,0.55)] transition-all hover:bg-primary/90 hover:shadow-[0_18px_40px_-22px_rgba(15,23,42,0.6)] active:scale-[0.99]"
+                                                            >
+                                                                {t('common.buyNow')}
+                                                            </Button>
+                                                        </DialogTrigger>
+                                                        <DialogContent className="rounded-2xl sm:max-w-md">
+                                                            <DialogHeader>
+                                                                <DialogTitle className="flex items-center gap-2 text-amber-600 dark:text-amber-400">
+                                                                    <svg className="h-5 w-5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                                    </svg>
+                                                                    {t('buy.warningTitle')}
+                                                                </DialogTitle>
+                                                            </DialogHeader>
+                                                            <div className="py-4 text-sm leading-relaxed text-muted-foreground">
+                                                                <div className="prose prose-sm max-w-none dark:prose-invert [&>*:first-child]:mt-0 [&>*:last-child]:mb-0">
+                                                                    <ReactMarkdown>{displayProduct.purchaseWarning || ''}</ReactMarkdown>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div className="flex justify-end gap-3">
-                                                            <Button
-                                                                variant="outline"
-                                                                className="rounded-xl"
-                                                                onClick={() => setShowWarningDialog(false)}
-                                                            >
-                                                                {t('common.cancel')}
-                                                            </Button>
-                                                            <Button
-                                                                onClick={() => {
-                                                                    setWarningConfirmed(true)
-                                                                    setShowWarningDialog(false)
-                                                                }}
-                                                                className="rounded-xl bg-primary font-medium text-primary-foreground hover:bg-primary/90"
-                                                            >
-                                                                {t('buy.confirmWarning')}
-                                                            </Button>
-                                                        </div>
-                                                    </DialogContent>
-                                                </Dialog>
+                                                            <div className="flex justify-end gap-3">
+                                                                <Button
+                                                                    variant="outline"
+                                                                    className="rounded-xl"
+                                                                    onClick={() => setShowWarningDialog(false)}
+                                                                >
+                                                                    {t('common.cancel')}
+                                                                </Button>
+                                                                <Button
+                                                                    onClick={() => {
+                                                                        setWarningConfirmed(true)
+                                                                        setShowWarningDialog(false)
+                                                                    }}
+                                                                    className="rounded-xl bg-primary font-medium text-primary-foreground hover:bg-primary/90"
+                                                                >
+                                                                    {t('buy.confirmWarning')}
+                                                                </Button>
+                                                            </div>
+                                                        </DialogContent>
+                                                    </Dialog>
+                                                    {renderShareButton(true)}
+                                                </div>
                                             ) : (
-                                                <BuyButton
-                                                    productId={displayProduct.id}
-                                                    price={displayProduct.price}
-                                                    productName={displayProduct.name}
-                                                    quantity={quantity}
-                                                    autoOpen={warningConfirmed && !!displayProduct.purchaseWarning}
-                                                    emailConfigured={emailConfiguredState}
-                                                    answers={hasQuestions ? questionAnswers : undefined}
-                                                />
+                                                <div className="flex items-center gap-2">
+                                                    <BuyButton
+                                                        productId={displayProduct.id}
+                                                        price={displayProduct.price}
+                                                        productName={displayProduct.name}
+                                                        quantity={quantity}
+                                                        autoOpen={warningConfirmed && !!displayProduct.purchaseWarning}
+                                                        emailConfigured={emailConfiguredState}
+                                                        answers={hasQuestions ? questionAnswers : undefined}
+                                                        className="h-11 flex-1 rounded-full bg-primary px-5 font-medium text-primary-foreground shadow-[0_16px_34px_-20px_rgba(15,23,42,0.55)] transition-all hover:bg-primary/90 hover:shadow-[0_18px_40px_-22px_rgba(15,23,42,0.6)]"
+                                                    />
+                                                    {renderShareButton(true)}
+                                                </div>
                                             )
                                         ) : displayLocked > 0 ? (
                                             <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 px-4 py-4 text-amber-800 dark:text-amber-200">
@@ -681,70 +762,11 @@ export function BuyContent({
                                     )}
                                 </div>
 
-                                <Dialog>
-                                    <DialogTrigger asChild>
-                                        <Button
-                                            type="button"
-                                            variant="outline"
-                                            className="h-11 w-full rounded-xl border-border/50 bg-background/50 font-medium transition-colors hover:bg-muted/50 hover:border-border"
-                                        >
-                                            <Share2 className="mr-2 h-4 w-4 opacity-70" />
-                                            {t('buy.share')}
-                                        </Button>
-                                    </DialogTrigger>
-                                        <DialogContent className="rounded-2xl sm:max-w-md">
-                                            <DialogHeader>
-                                                <DialogTitle>{t('buy.shareTitle')}</DialogTitle>
-                                                <DialogDescription>{t('buy.shareDescription')}</DialogDescription>
-                                            </DialogHeader>
-                                            <div className="grid grid-cols-2 gap-2">
-                                                {shareLinks?.x ? (
-                                                    <Button asChild variant="outline" className="rounded-xl">
-                                                        <a href={shareLinks.x} target="_blank" rel="noopener noreferrer">X (Twitter)</a>
-                                                    </Button>
-                                                ) : (
-                                                    <Button variant="outline" className="rounded-xl" disabled>X (Twitter)</Button>
-                                                )}
-                                                {shareLinks?.facebook ? (
-                                                    <Button asChild variant="outline" className="rounded-xl">
-                                                        <a href={shareLinks.facebook} target="_blank" rel="noopener noreferrer">Facebook</a>
-                                                    </Button>
-                                                ) : (
-                                                    <Button variant="outline" className="rounded-xl" disabled>Facebook</Button>
-                                                )}
-                                                {shareLinks?.telegram ? (
-                                                    <Button asChild variant="outline" className="rounded-xl">
-                                                        <a href={shareLinks.telegram} target="_blank" rel="noopener noreferrer">Telegram</a>
-                                                    </Button>
-                                                ) : (
-                                                    <Button variant="outline" className="rounded-xl" disabled>Telegram</Button>
-                                                )}
-                                                {shareLinks?.whatsapp ? (
-                                                    <Button asChild variant="outline" className="rounded-xl">
-                                                        <a href={shareLinks.whatsapp} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-                                                    </Button>
-                                                ) : (
-                                                    <Button variant="outline" className="rounded-xl" disabled>WhatsApp</Button>
-                                                )}
-                                                {shareLinks?.line ? (
-                                                    <Button asChild variant="outline" className="rounded-xl col-span-2">
-                                                        <a href={shareLinks.line} target="_blank" rel="noopener noreferrer">Line</a>
-                                                    </Button>
-                                                ) : (
-                                                    <Button variant="outline" className="rounded-xl col-span-2" disabled>Line</Button>
-                                                )}
-                                            </div>
-                                            <Button
-                                                type="button"
-                                                variant="secondary"
-                                                className="rounded-xl"
-                                                onClick={handleCopyLink}
-                                                disabled={!shareUrl}
-                                            >
-                                                {t('buy.shareCopy')}
-                                            </Button>
-                                        </DialogContent>
-                                </Dialog>
+                                {!showInlineShareAction && (
+                                    <div className="flex justify-end">
+                                        {renderShareButton(false)}
+                                    </div>
+                                )}
 
                                 <div className="rounded-xl border border-border/20 bg-muted/10 px-4 py-3 text-xs leading-relaxed text-muted-foreground">
                                     {t('buy.paymentTimeoutNotice')}
